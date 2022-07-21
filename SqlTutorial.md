@@ -1,3 +1,5 @@
+source: [Codecademy](https://www.codecademy.com/learn/learn-sql)
+
 I)
 - Create: tạo bảng <br>
 	 <br>
