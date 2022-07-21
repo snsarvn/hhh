@@ -1,0 +1,2 @@
+# SQL
+self learn sql
