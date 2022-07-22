@@ -31,6 +31,15 @@ source: [Codecademy](https://www.codecademy.com/learn/learn-sql).<br>
     - [GROUP BY II](#group-by-tiếp-theo-thỉnh-thoảng-thì-chúng-ta-ko-nhóm-theo-cột-mà-nhóm-theo-1-phép-tính-thì-các-làm-trên-sẽ-dài-dòng-vì-thế-nên-có-cách-thứ-2-này)
     - [HAVING](#having-khi-chúng-ta-lọc-thông-tin-bằng-group-by-ví-dụ-chúng-ta-chỉ-cần-biết-bao-nhiêu-phim-khác-nhau-với-tiêu-chí-như-thể-loại-thế-nào-nhưng-bây-giờ-không-thể-dùng-where-được-vì-ta-muốn-nhóm-dữ-liệu-lại-và-thống-kê-trên-vài-dòng-để-dễ-đọc-thì-chúng-ta-sẽ-dùng-having-thường-đứng-sau-group-by--nhưng-thường-đứng-trước-order-by-và-limit)
 - [Multiple Table](#multipe-table)
+    - [Multiple Table](#multiple-table-để-lưu-dữ-liệu-một-cách-hiệu-quả-chúng-ta-thường-lưu-trong-nhiều-bảng-vì-nếu-1-bảng-lưu-thông-tin-của-1-khách-hàngbr)
+    - [Combining Table Manually](#combining-tables-manuallykết-hợp-các-bảng-theo-cách-thủ-công)
+    - [Combining Table With SQL](#combining-tables-with-sql)
+    - [INNER JOIN](#inner-join)
+    - [LEFT JOIN](#left-join)
+    - [Primary Key & Foreign Key](#primary-key-vs-foreign-key)
+    - [CROSS JOIN](#cross-join)
+    - [UNION](#union-tập-hợp)
+    - [WITH](#with)
 # Basic Command
 - ## Create: tạo bảng 
     ```sql
@@ -474,14 +483,137 @@ Khi dùng QUERIES thì các câu lệnh dài có thể xuống dòng để có t
     
     - FOREIGN KEY: Khi PRIMARY KEY xuất hiện trong bản khác nó là FOREIGN KEY.
 
-        |order_id	|customer_id	|subscription_id	|purchase_date|
-        | ---- | ---- | ---- | ---- |
-        |1	|2	|3	|2017-01-01|
-        |2	|2	|2	|2017-01-01|
-        |3	|3	|1	|2017-01-01|
+       > |order_id	|customer_id	|subscription_id	|purchase_date|
+       > | ---- | ---- | ---- | ---- |
+       > |1	|2	|3	|2017-01-01|
+       > |2	|2	|2	|2017-01-01|
+       > |3	|3	|1	|2017-01-01|
 
         > FOREIGN KEY trong bảng là
         > - customer_id
         > - subscription_id
 - ## CROSS JOIN
-    > 
+    > Đôi khi chúng ta muốn kết hợp tất cả các hàng của bảng này với tất cả các hàng của bảng khác 
+    > > Ví  dụ: Chúng ta có bảng shirts và bảng pants. Chúng ta muốn biết chúng sẽ kết hợp để tạo ra những trang phục khác nhau thì sẽ dùng ***CROSS JOIN***
+
+    ```sql
+    SELECT shirts.shirt_color,
+    pants.pants_color
+    FROM shirts
+    CROSS JOIN pants;
+    ```
+    > |*shirt_color*|	*pants_color*|
+    > | --- | --- |
+    > |white|	light denim|
+    > |white|	black|
+    > |grey|	light denim|
+    > |grey|	black|
+    > |olive|	light denim|
+    > |olive|	black|
+    >
+    > > 3 shirts × 2 pants = 6 combinations!
+
+    ```sql
+    SELECT count(*)
+    FROM newspaper
+    WHERE start_month <= 3 AND end_month >= 3;
+    -- số khách hàng đã đăng kí trong tháng 3
+
+    SELECT *
+    FROM newspaper
+    CROSS JOIN months;
+    -- liệt kê các tháng từ 1 đến 12 ở mỗi loại
+
+    SELECT *
+    FROM newspaper
+    CROSS JOIN months
+    WHERE start_month <= month AND end_month >= month;
+    -- tháng đăng kí nằm trong khoảng thời gian hợp lệ
+
+    SELECT month, count(*)
+    FROM newspaper
+    CROSS JOIN months
+    WHERE start_month <= month AND end_month >= month
+    GROUP BY month;
+    -- đếm số tháng hợp lệ
+    ```
+
+- ## UNION( Tập Hợp )
+    > - Đôi khi chúng ta muốn xếp tập dữ liệu này trên tập dữ liệu kia thì ta dùng ***UNION***.<br>
+    > - Ta có 2 bảng như sau
+    > > table 1:
+    > > |pokemon	|type|
+    > > | --- | --- |
+    > > |Bulbasaur	|Grass|
+    > > |Charmander	|Fire|
+    > > |Squirtle	|Water|
+    > >
+    > > table 2:
+    > > |pokemon	|type|
+    > > | --- | --- |
+    > > |Snorlax	|Normal|
+    >
+    > Khi sử dụng câu lệnh UNION như sau:
+
+    ```sql
+    SELECT *
+    FROM table1
+    UNION
+    SELECT *
+    FROM table2;
+    ```
+
+    > Kết quả sẽ là:
+     > > |pokemon	|type|
+    > > | --- | --- |
+    > > |Bulbasaur	|Grass|
+    > > |Charmander	|Fire|
+    > > |Squirtle	|Water|
+    > > |Snorlax	|Normal|
+    >
+    > Lưu ý để sử dụng câu lệnh thì:
+    > - Hai bảng phải có cùng số lượng cột
+    > - Các cột phải có cùng kiểu dữ liệu theo thứ tự tương ứng
+
+- ## WITH:
+    > Đôi khi chúng ta muốn kết hợp các bảng nhưng 1 trong các bảng là kết quả của một phép tính <br>
+    > Syntax:
+    ```sql
+    WITH previous_results AS (
+    SELECT ...
+    ...
+    ...
+    ...
+    )
+    SELECT *
+    FROM previous_results
+    JOIN customers
+    ON _____ = _____;
+    ```
+    > - Câu lệnh ***WITH*** giúp chúng ta thực hiện 1 truy vấn riêng biệt.
+    > - ***previous_results*** là bí danh khi ta muốn tham chiếu đến cột bên trong câu lệnh ***WITH***.
+    > - Sau đó chúng ta có thể làm bất cứ thứ gì.
+    ### Ví dụ:
+    ```sql
+    WITH previous_query AS (
+    SELECT customer_id, 
+        COUNT(subscription_id) AS 'subscriptions'
+    FROM orders
+    GROUP BY customer_id
+    )
+    SELECT customers.customer_name, 
+    previous_query.subscriptions
+    FROM previous_query
+    JOIN customers
+    ON previous_query.customer_id = customers.customer_id; 
+    ```
+---
+[^1]: Đây là MARKDOWN mình vừa học vừa viết.
+
+[^2]: Nếu sai hãy commit giúp mình hoàn thiện^^.
+
+[^note]: 
+    fasdfafdlajflkajlkfdjsalfka
+
+
+
