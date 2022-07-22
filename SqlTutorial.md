@@ -1,6 +1,37 @@
-source: [Codecademy](https://www.codecademy.com/learn/learn-sql)
-
-# BASIC DISPLAY SYNTAX
+source: [Codecademy](https://www.codecademy.com/learn/learn-sql).<br>
+## Table Content
+- [Basic Command](#basic-command)
+    - [Create](#create-tạo-bảng)
+    - [Insert](#insert-thêm-dữ-liệu-trong-bảng-có-sẵn)
+    - [Select](#select-câu-lênh-dấy-dữ-liệu-từ-trong-bảng-của-database)
+    - [Alter](#alter-câu-lệnh-thêm-một-cột-mới-vào-bảng)
+    - [Update](#update-cập-nhật-dữ-liệu-ở-1-hàng)
+    - [Delete](#delete-xoá-1-hoặc-nhiều-hàng-ở-table)
+    - [Constraints](#constraints-bổ-sung-thông-tin-về-cách-một-cột-có-thể-được-sử-dụng-được-gọi-sau-khi-chỉ-định-kiểu-dữ-liệu-cho-một-cột-chúng-có-thể-được-sử-dụng-để-yêu-cầu-cơ-sở-dữ-liệu-từ-chối-dữ-liệu-được-chèn-vào-mà-không-tuân-theo-một-hạn-chế-nhất-định-câu-lệnh-dưới-đây-thiết-lập-các-ràng-buộc-trên-bảng-celebs)
+- [Queries](#queries)
+    - [As](#as--khi-dùng-lệnh-as-thì-sẽ-đặt-cho-tên-cột-1-bí-danh-không-làm-thay-đổi-tên-cột-nhưng-kết-quả-hiện-ra-sẽ-tiện-theo-dõi-nếu-muốn)
+    - [Distinct](#distinct-trong-1-cột-sẽ-có-nhiều-dữ-liệu-trùng-nhau-câu-lệnh-này-chỉ-ra-các-kết-quả-khác-nhau-chỉ-1-lần-để-dễ-dàng-xem)
+    - [Where](#where-là-câu-điều-kiện-kiểm-tra-các-giá-trị-logic-khi-đạt-điều-kiện-nào-đó)
+    - [Like I](#like-1-để-so-sánh-giá-trị-tương-tự-dùng-các-kí-tự-wilcard)
+    - [Like II](#like-2--có-thể-thêm-bất-cứ-kí-tự-wildcard-các-vào-để-tìm-chuỗi-tương-ứng--giống-regex)
+    - [Is NULL](#is-null-khi-tạo-bảng-thì-không-gán-giá-trị-thì-nó-sẽ-mặc-định-là-không-có-giá-trị-đó-chính-là-null-có-thể-kiếm-tra-bằng--hoặc---hoặc-có-thể-dùng)
+    - [Between](#between-là-1-toán-tử-thường-dùng-trong-câu-lệnh-where-để-lấy-dữ-liệu-nằm-trong-1-vùng-nào-đó-có-thể-là-số-kí-tự-hoặc-ngày-tháng)
+    - [And](#and-toán-tử-và--tất-cả-thoả-mãn-điều-kiện-cho-trước-mới-chọn)
+    - [Or](#or-toán-tử-hoặc--thoả-mãn-1-trong-các-điều-kiện-là-đủ)
+    - [Order By](#order-by-khi-tìm-được-dữ-liệu-thì-ta-cần-phải-sắp-xếp-lại-dữ-liệu-để-dễ-đọc-đây-là-công-dụng-của-câu-lệnh-order-by-mặc-định-sắp-xếp-tăng-dần-theo-bảng-chữ-cái)
+    - [Limit](#limit-thông-thường-thì-các-database-sẽ-có-rất-nhiều-dòngbản-ghi-khi-đó-nếu-dùng-select-thì-sẽ-hiển-thị-ra-rất-nhiều-khiến-cho-máy-tính-chậm-nên-cần-dùng-câu-lệnh-limit-để-giới-hạn-số-bản-ghi-được-in-ra-màn-hình)
+    - [Case](#case-giúp-chúng-ta-hiển-thị-kết-quả-tuỳ-chỉnh-có-thể-bằng-1-cột-riêng-biệt-giống-câu-lệnh-điều-kiện-if-then)
+- [SQL Aggregate](#các-lênh-tính-toán-dùng-sql-aggregate)
+    - [COUNT](#count-tính-đếm-các-các-hàngbao-nhiêu-bản-ghi-hoặc-tổng)
+    -  [SUM](#sum-tổng-giá-trị)
+    - [MAX/ MIN](#max-min-tính-giá-trị-lớn-nhất-nhỏ-nhất-của-1-trường-cụ-thể)
+    - [AVG](#avg-viết-tắt-của-averagetrung-bình-tính-giá-trị-trung-bình-của-1-trường-cụ-thể)
+    - [ROUND](#round-thông-thường-sql-sẽ-hiển-thị-số-chính-xác-nhất-có-thể-để-có-thể-làm-tròn-thì-ta-dùng-hàm-này)
+    - [GROUP BY I](#group-by-khi-chúng-ta-muốn-tính-toán-cho-1-vài-đặc-điểm-nhất-định-thường-đứng-sau-where-và-thường-đứng-trước-order-by-và-limit)
+    - [GROUP BY II](#group-by-tiếp-theo-thỉnh-thoảng-thì-chúng-ta-ko-nhóm-theo-cột-mà-nhóm-theo-1-phép-tính-thì-các-làm-trên-sẽ-dài-dòng-vì-thế-nên-có-cách-thứ-2-này)
+    - [HAVING](#having-khi-chúng-ta-lọc-thông-tin-bằng-group-by-ví-dụ-chúng-ta-chỉ-cần-biết-bao-nhiêu-phim-khác-nhau-với-tiêu-chí-như-thể-loại-thế-nào-nhưng-bây-giờ-không-thể-dùng-where-được-vì-ta-muốn-nhóm-dữ-liệu-lại-và-thống-kê-trên-vài-dòng-để-dễ-đọc-thì-chúng-ta-sẽ-dùng-having-thường-đứng-sau-group-by--nhưng-thường-đứng-trước-order-by-và-limit)
+- [Multiple Table](#multipe-table)
+# Basic Command
 - ## Create: tạo bảng 
     ```sql
     CREATE TABLE celebs (
