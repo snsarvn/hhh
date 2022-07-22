@@ -380,4 +380,77 @@ Khi dùng QUERIES thì các câu lệnh dài có thể xuống dòng để có t
     ON orders.customer_id = customers.customer_id;
     ```
 - ## INNER JOIN
-    ![Inner Join](./inner-join-in-sql.webp)
+    ![Inner Join](./img/inner-join.webp)
+
+    > giống như lệnh JOIN.
+
+    >Chỉ lấy những hàng có điểm chung là cột chỉ định sau đó ghép 2 bảng lại.
+
+    ```sql
+    SELECT COUNT(*)
+    FROM newspaper;
+    --result: 60
+
+    SELECT COUNT(*)
+    FROM online;
+    --result: 65
+
+    SELECT COUNT(*)
+    FROM newspaper
+    INNER JOIN online
+    ON newspaper.id = online.id;
+    --result: 50
+    ```
+
+- ## LEFT JOIN
+
+    ![LEFT JOIN](./img/left-join.webp)
+
+    > Khi dùng câu lệnh LEFT JOIN thì các cột ở câu lệnh ON không trùng khớp với cột ở cột bên trái thì sẽ bị loại bỏ và cột chung là dữ liệu của cột bên trái
+
+    ```sql
+    SELECT *
+    FROM table1
+    LEFT JOIN table2
+    ON table1.c2 = table2.c2;
+    ```
+
+    > CÁC LỆNH LIÊN QUAN JOIN CÓ THỂ VIẾT TẮT BẰNG AS
+
+    ```sql
+    SELECT A.column_name, B.column_name
+    FROM table1 AS A
+    LEFT JOIN table2 AS B
+    ON A.column_name = B.column_name;
+    ```
+    >tìm kiếm các bản ghi mà cột online.id bị ghi đè bởi newspaper.id
+    ```sql
+    SELECT *
+    FROM newspaper
+    LEFT JOIN online
+    ON newspaper.id = online.id
+    WHERE online.id IS NULL;
+    ```
+- ## PRIMARY KEY vs FOREIGN KEY
+    - Primary key: Mỗi bảng chỉ có 1 cột xác định duy nhất trên mỗi hàng
+        - order_id của bảng orders
+        - subscription_id của bảng subscriptions
+        - customer_id của bảng customers
+        > PRIMARY KEY có 1 rằng buộc là
+        > - Không có giá trị nào là NULL.
+        > - Mỗi giá trị trên cột đó là duy nhất VD: Không có order_id nào giống nhau trong bảng orders.
+        > - Mỗi bảng chỉ có 1 cột là PRIMARY KEY.
+    
+    - FOREIGN KEY: Khi PRIMARY KEY xuất hiện trong bản khác nó là FOREIGN KEY.
+
+        |order_id	|customer_id	|subscription_id	|purchase_date|
+        | ---- | ---- | ---- | ---- |
+        |1	|2	|3	|2017-01-01|
+        |2	|2	|2	|2017-01-01|
+        |3	|3	|1	|2017-01-01|
+
+        > FOREIGN KEY trong bảng là
+        > - customer_id
+        > - subscription_id
+- ## CROSS JOIN
+    > 
